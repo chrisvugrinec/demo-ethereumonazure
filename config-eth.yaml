@@ -7,6 +7,7 @@
   - name: Setting facts
     set_fact:
       gethdir: '/opt/ethereum/demo-eko'
+      gethsolidedir: '/opt/ethereum/solidity-ide'
       gethclientdir: '/opt/ethereum/demo-eko-client'
       gethnodeport: 30303      
       gethpassword: 'helloworld123'
@@ -35,11 +36,24 @@
       mode: 0755
     become: true
     become_user: root
+  - file:
+      path: "{{gethsolidedir}}"
+      owner: "{{user}}"
+      group: "{{user}}"
+      state: directory
+      mode: 0755
+    become: true
+    become_user: root
+  - name: Extract Solidity Eth Ide
+    unarchive:
+      src: solidity-ide/sol.tar.gz
+      dest: "{{gethsolidedir}}"
   - copy:
       src: ethereum/genesis-block.json
       dest: "{{gethdir}}"
-  - copy:
-      src: ethereum-client/eth-net-intelligence-api.tar
+  - name: Extract Netstat Eth Client
+    unarchive:
+      src: ethereum-client/eth-net-intelligence-api.tar.gz
       dest: "{{gethclientdir}}"
   - name: Install Go
     apt: name=golang state=installed
@@ -59,12 +73,8 @@
     become_user: root
   - name: Initialize private ETH network
     shell: geth --datadir "{{gethdir}}" init "{{gethdir}}"/genesis-block.json
-  - name: unpack netstats client
-    shell: tar -xvf "{{gethclientdir}}"/eth-net-intelligence-api.tar; cd ~/eth-net-intelligence-api; npm install; npm install -g pm2
-    become: true
-    become_user: root
-  - name: Change to correct owner
-    shell: chown -R vsts /home/vsts/eth-net-intelligence-api/
+  - name: install netstats client
+    shell: cd  "{{gethclientdir}}"; npm install; npm install -g pm2
     become: true
     become_user: root
   - name: Start geth node
@@ -93,7 +103,7 @@
     register: enode
   # STARTING ETH NETSTAT CLIENT
   - name: Start eth net stat client
-    shell: cd ~/eth-net-intelligence-api; pm2 start /tmp/pm2-template*.json
+    shell: cd "{{gethclientdir}}"/eth-net-intelligence-api; pm2 start /tmp/pm2-template*.json
   - file: path=/tmp/enodes state=touch
   - name: Generating tmp file
     blockinfile:
