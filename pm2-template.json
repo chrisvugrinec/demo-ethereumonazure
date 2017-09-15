@@ -1,0 +1,21 @@
+[
+  {
+    "name"              : "XXX_PM2NAME_XXX",
+    "cwd"               : ".",
+    "script"            : "app.js",
+    "log_date_format"   : "YYYY-MM-DD HH:mm Z",
+    "merge_logs"        : false,
+    "watch"             : true,
+    "exec_interpreter"  : "node",
+    "exec_mode"         : "fork_mode",
+    "env":
+    {
+      "NODE_ENV"        : "production",
+      "RPC_HOST"        : "localhost",
+      "RPC_PORT"        : "8545",
+      "INSTANCE_NAME"   : "XXX_PM2NAME_XXX",
+      "WS_SERVER"       : "XXX_PM2SERVER_XXX",
+      "WS_SECRET"       : "XXX_PM2SECRET_XXX",
+    }
+  }
+]
