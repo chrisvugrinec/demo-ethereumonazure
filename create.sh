@@ -15,7 +15,7 @@ fi
 resourcegroup=$1
 nrofmachines=$2
 username=vsts
-region="westeurope"
+region="eastus"
 pm2password="helloworld123"
 
 vnetname="vnet-"$resourcegroup
@@ -134,7 +134,7 @@ rm -f enodes.txt
 # Getting the enode data locally on this machine
 for host in $(cat hosts.txt )
 do
-  ssh $host 'cat /tmp/enodes' >>enodes.txt
+  ssh $username@$host 'cat /tmp/enodes' >>enodes.txt
 done
 
 firstHost=$(cat hosts.txt | head -1)
@@ -145,7 +145,7 @@ echo "host: $firstHost"
 for enode in $(cat enodes.txt  | grep -v ANSIBLE | sed 's/"//g')
 do
    echo "Adding enode $enode as peer to this private eth network"
-   ssh $firstHost 'echo "admin.addPeer('\"$enode\"')" | geth attach ipc:/'$gethDir'/geth.ipc'
+   ssh $username@$firstHost 'echo "admin.addPeer('\"$enode\"')" | geth attach ipc:/'$gethDir'/geth.ipc'
 done
 
 
