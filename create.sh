@@ -15,7 +15,7 @@ fi
 resourcegroup=$1
 nrofmachines=$2
 username=vsts
-region="eastus"
+region="westeurope"
 pm2password="helloworld123"
 
 vnetname="vnet-"$resourcegroup
